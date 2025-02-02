@@ -28,4 +28,9 @@ class Party extends Model
     {
         return $this->hasMany(Organization::class);
     }
+    public function getPartyTypeLabelAttribute(): string
+    {
+        return PartyType::fromValue($this->party_type)->description;
+    }
+    
 } 

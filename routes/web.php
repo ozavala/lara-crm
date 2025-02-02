@@ -1,9 +1,8 @@
 <?php
 
+use App\Http\Controllers\PartyController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Models\Party;
-use App\Http\Controllers\PartyController;
 
 Route::get('/', function () {
     return view('welcome');

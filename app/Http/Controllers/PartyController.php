@@ -8,14 +8,40 @@ use App\Models\Organization;
 use App\Enums\PartyType;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Enum;
+use Illuminate\Support\Facades\DB;
 
 class PartyController extends Controller
 {
+    // app/Http/Controllers/PartyController.php
+    
     public function index()
+{
+    $results = Party::leftJoin('people', function($join) {
+        $join->on('parties.id', '=', 'people.party_id')
+             ->where('parties.party_type', '=', PartyType::PERSON);
+    })
+    ->leftJoin('organizations', function($join) {
+        $join->on('parties.id', '=', 'organizations.party_id')
+             ->where('parties.party_type', '=', PartyType::ORGANIZATION);
+    })
+    ->select('parties.id', 'parties.party_type', 
+        'people.first_name as person_first_name',
+        'people.last_name as person_last_name', 
+        'organizations.name as organization_name',
+        'organizations.tax_id as organization_tax_id',
+        'organizations.website as organization_website')
+    ->get();
+
+    //dd($results); // for debugging purposes, to see the SQL query being executed and the data it returns
+
+    return view('parties.index', compact('results'));
+
+}
+     /*public function index()
     {
         $parties = Party::with(['people', 'organizations'])->latest()->paginate(10);
         return view('parties.index', compact('parties'));
-    }
+    }*/
 
     public function create()
     {
